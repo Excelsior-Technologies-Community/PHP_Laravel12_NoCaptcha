@@ -423,5 +423,3 @@ PHP_Laravel12_NoCaptcha/
 ---
 
 Your PHP_Laravel12_NoCaptcha Project is now ready!
-
-
