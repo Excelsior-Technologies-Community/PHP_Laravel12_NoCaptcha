@@ -7,6 +7,12 @@ use App\Models\Contact;
 
 class ContactController extends Controller
 {
+    public function index()
+    {
+        $contacts = Contact::latest()->paginate(10);
+        return view('admin_contacts', compact('contacts'));
+    }
+
     public function showForm()
     {
         return view('contact');
@@ -14,7 +20,6 @@ class ContactController extends Controller
 
     public function submitForm(Request $request)
     {
-        //  Modern Laravel validation
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -22,14 +27,19 @@ class ContactController extends Controller
             'g-recaptcha-response' => 'required|captcha'
         ]);
 
-        //  Save submission to database
         Contact::create([
             'name' => $request->name,
             'email' => $request->email,
             'message' => $request->message,
         ]);
 
-        //  Redirect with success message
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Your message has been sent successfully!'
+            ]);
+        }
+
         return back()->with('success', 'Form submitted and saved successfully!');
     }
 }
