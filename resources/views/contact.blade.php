@@ -1,165 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
-    
+    <title>Dark Contact Form</title>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google CAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen flex items-center justify-center">
 
-    <div class="w-full max-w-xl bg-white shadow-2xl rounded-2xl p-8">
-        <h1 class="text-3xl font-bold text-gray-800 text-center mb-2">
-            Contact Us
-        </h1>
-        <p class="text-gray-500 text-center mb-6">
-            We'd love to hear from you. Fill out the form below.
-        </p>
+<body class="min-h-screen bg-gray-950 flex items-center justify-center px-4 py-10">
 
-        @if(session('success'))
-            <div class="bg-green-100 text-green-700 px-4 py-3 rounded-lg mb-4">
-                {{ session('success') }}
+    <!-- Main Card -->
+    <div class="w-full max-w-xl bg-gray-900 border border-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+
+        <!-- Top Gradient -->
+        <div class="h-2 bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600"></div>
+
+        <div class="p-8 md:p-10">
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+
+                <div
+                    class="w-20 h-20 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 flex items-center justify-center text-4xl mx-auto shadow-lg">
+                    ✉
+                </div>
+
+                <h1 class="text-4xl font-extrabold text-white mt-5">
+                    Contact Us
+                </h1>
+
+                <p class="text-gray-400 mt-2">
+                    Send your message anytime
+                </p>
+
             </div>
-        @endif
 
-        @if($errors->any())
-            <div class="bg-red-100 text-red-700 px-4 py-3 rounded-lg mb-4">
-                <ul class="list-disc ml-5">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+            <!-- Success -->
+            @if(session('success'))
+                <div class="bg-green-500/10 border border-green-500 text-green-400 px-4 py-3 rounded-xl mb-5">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-        <form id="contactForm" action="{{ route('contact.submit') }}" method="POST" class="space-y-5">
-            @csrf
+            <!-- Errors -->
+            @if($errors->any())
+                <div class="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-xl mb-5">
+                    <ul class="list-disc ml-5">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input
-                    type="text"
-                    name="name"
-                    value="{{ old('name') }}"
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    placeholder="Enter your name"
-                >
-                @error('name')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <!-- Form -->
+            <form action="{{ route('contact.submit') }}" method="POST" class="space-y-6">
+
+                @csrf
+
+                <!-- Name -->
+                <div>
+                    <label class="block text-gray-300 mb-2 font-medium">
+                        Full Name
+                    </label>
+
+                    <input type="text" name="name" value="{{ old('name') }}" placeholder="Enter your name"
+                        class="w-full bg-gray-800 border border-gray-700 text-white rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+
+                    @error('name')
+                        <p class="text-red-400 text-sm mt-2">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block text-gray-300 mb-2 font-medium">
+                        Email Address
+                    </label>
+
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="Enter your email"
+                        class="w-full bg-gray-800 border border-gray-700 text-white rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                    @error('email')
+                        <p class="text-red-400 text-sm mt-2">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <!-- Message -->
+                <div>
+                    <label class="block text-gray-300 mb-2 font-medium">
+                        Message
+                    </label>
+
+                    <textarea name="message" rows="5" placeholder="Write your message..."
+                        class="w-full bg-gray-800 border border-gray-700 text-white rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500">{{ old('message') }}</textarea>
+
+                    @error('message')
+                        <p class="text-red-400 text-sm mt-2">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <!-- CAPTCHA -->
+                <div class="flex justify-center overflow-x-auto">
+                    {!! NoCaptcha::display() !!}
+                </div>
+
+                @error('g-recaptcha-response')
+                    <p class="text-red-400 text-sm text-center">
+                        {{ $message }}
+                    </p>
                 @enderror
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    placeholder="Enter your email"
-                >
-                @error('email')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                <!-- Button -->
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 hover:opacity-90 transition duration-300 text-white font-bold py-4 rounded-2xl shadow-xl text-lg">
+                    🚀 Send Message
+                </button>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                <textarea
-                    name="message"
-                    rows="4"
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    placeholder="Write your message..."
-                >{{ old('message') }}</textarea>
-                @error('message')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+            </form>
 
-            <div class="flex justify-center">
-                {!! NoCaptcha::display() !!}
-            </div>
+        </div>
 
-            @error('g-recaptcha-response')
-                <p class="text-red-500 text-sm text-center">{{ $message }}</p>
-            @enderror
-
-            <button
-                type="submit"
-                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition duration-200 shadow-md"
-            >
-                Send Message
-            </button>
-        </form>
     </div>
 
+    <!-- CAPTCHA JS -->
     {!! NoCaptcha::renderJs() !!}
 
-    <script>
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            let submitBtn = this.querySelector('button[type="submit"]');
-            let originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = 'Sending...';
-            submitBtn.disabled = true;
-
-            let formData = new FormData(this);
-
-            fetch(this.action, {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json'
-                },
-                body: formData
-            })
-            .then(async response => {
-                const data = await response.json();
-                if (!response.ok) {
-                    throw data;
-                }
-                return data;
-            })
-            .then(data => {
-                if(data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sent!',
-                        text: data.message,
-                        confirmButtonColor: '#4f46e5'
-                    });
-                    document.getElementById('contactForm').reset();
-                    if (typeof grecaptcha !== 'undefined') {
-                        grecaptcha.reset();
-                    }
-                }
-            })
-            .catch(errorData => {
-                let errorMessage = 'Something went wrong! Please try again.';
-                
-                if (errorData.errors) {
-                    errorMessage = Object.values(errorData.errors).flat().join('\n');
-                }
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: errorMessage,
-                });
-
-                if (typeof grecaptcha !== 'undefined') {
-                    grecaptcha.reset();
-                }
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-    </script>
 </body>
+
 </html>
