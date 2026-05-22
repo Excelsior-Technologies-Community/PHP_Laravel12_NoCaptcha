@@ -39,21 +39,21 @@ class ContactController extends Controller
                 ->orWhere('message', 'like', "%{$request->search}%");
         }
 
-      $contacts = $query->orderBy('id', 'asc')->paginate(4);
+        $contacts = $query->orderBy('id', 'asc')->paginate(4);
 
         // IMPORTANT: match your route view name
         return view('contacts.dashboard', compact('contacts'));
     }
 
     // TRASH LIST
- public function trash()
-{
-    $contacts = Contact::onlyTrashed()
-        ->latest()
-        ->paginate(5);
+    public function trash()
+    {
+        $contacts = Contact::onlyTrashed()
+            ->latest()
+            ->paginate(5);
 
-    return view('contacts.trash', compact('contacts'));
-}
+        return view('contacts.trash', compact('contacts'));
+    }
 
     // SOFT DELETE (MOVE TO TRASH)
     public function delete($id)
