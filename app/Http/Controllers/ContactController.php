@@ -7,13 +7,13 @@ use App\Models\Contact;
 
 class ContactController extends Controller
 {
-    // 📌 Show contact form
+    // Show contact form
     public function showForm()
     {
         return view('contact');
     }
 
-    // 📌 Store contact form
+    // Store contact form
     public function submitForm(Request $request)
     {
         $request->validate([
@@ -28,7 +28,7 @@ class ContactController extends Controller
             ->with('success', 'Message sent successfully!');
     }
 
-    // 📌 CONTACT DASHBOARD (LIST)
+    // CONTACT DASHBOARD (LIST)
     public function index(Request $request)
     {
         $query = Contact::query();
@@ -41,11 +41,11 @@ class ContactController extends Controller
 
       $contacts = $query->orderBy('id', 'asc')->paginate(4);
 
-        // ⚠️ IMPORTANT: match your route view name
+        // IMPORTANT: match your route view name
         return view('contacts.dashboard', compact('contacts'));
     }
 
-    // 📌 TRASH LIST
+    // TRASH LIST
  public function trash()
 {
     $contacts = Contact::onlyTrashed()
@@ -55,7 +55,7 @@ class ContactController extends Controller
     return view('contacts.trash', compact('contacts'));
 }
 
-    // 📌 SOFT DELETE (MOVE TO TRASH)
+    // SOFT DELETE (MOVE TO TRASH)
     public function delete($id)
     {
         Contact::findOrFail($id)->delete();
@@ -64,7 +64,7 @@ class ContactController extends Controller
             ->with('success', 'Contact moved to trash successfully!');
     }
 
-    // 📌 RESTORE FROM TRASH
+    // RESTORE FROM TRASH
     public function restore($id)
     {
         Contact::onlyTrashed()->findOrFail($id)->restore();
@@ -73,7 +73,7 @@ class ContactController extends Controller
             ->with('success', 'Contact restored successfully!');
     }
 
-    // 📌 PERMANENT DELETE
+    // PERMANENT DELETE
     public function forceDelete($id)
     {
         Contact::onlyTrashed()->findOrFail($id)->forceDelete();
