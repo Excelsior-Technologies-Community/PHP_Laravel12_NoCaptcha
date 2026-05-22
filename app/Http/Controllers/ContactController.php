@@ -20,10 +20,9 @@ class ContactController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'message' => 'required|string',
-            'g-recaptcha-response' => 'required|captcha'
         ]);
 
-        Contact::create($request->only('name','email','message'));
+        Contact::create($request->only('name', 'email', 'message'));
 
         return redirect('/contact')
             ->with('success', 'Message sent successfully!');
@@ -36,23 +35,25 @@ class ContactController extends Controller
 
         if ($request->search) {
             $query->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('email', 'like', "%{$request->search}%")
-                  ->orWhere('message', 'like', "%{$request->search}%");
+                ->orWhere('email', 'like', "%{$request->search}%")
+                ->orWhere('message', 'like', "%{$request->search}%");
         }
 
-        $contacts = $query->orderBy('id', 'asc')->get();
+      $contacts = $query->orderBy('id', 'asc')->paginate(4);
 
         // ⚠️ IMPORTANT: match your route view name
         return view('contacts.dashboard', compact('contacts'));
     }
 
     // 📌 TRASH LIST
-    public function trash()
-    {
-        $contacts = Contact::onlyTrashed()->latest()->get();
+ public function trash()
+{
+    $contacts = Contact::onlyTrashed()
+        ->latest()
+        ->paginate(5);
 
-        return view('contacts.trash', compact('contacts'));
-    }
+    return view('contacts.trash', compact('contacts'));
+}
 
     // 📌 SOFT DELETE (MOVE TO TRASH)
     public function delete($id)
